@@ -60,9 +60,13 @@ A compiler is a program that translates code from a source language into a targe
 
 | Token Type | Examples | Description |
 |---|---|---|
-| `name` | `add`, `subtract`, `init`, `my_var` | Identifiers and function names |
+| `keyword` | `make`, `function`, `return` | Language reserved keywords |
+| `name` | `int`, `var_name`, `fun_name`, `add` | Identifiers and type names |
+| `operator` | `=` | Assignment operator |
+| `colon` | `:` | Return type separator |
+| `brace` | `{`, `}` | Function and block delimiters |
 | `paren` | `(`, `)` | Opening and closing parentheses |
-| `comma` | `,` | Argument separators in function calls |
+| `comma` | `,` | Argument and parameter separators |
 | `semicolon` | `;` | Statement delimiters |
 | `number` | `2`, `42`, `100` | Integer numeric literals |
 | `string` | `"hello"`, `'world'` | Single or double-quoted string literals |
@@ -435,9 +439,27 @@ Recursively formats each node:
 ```bash
 node test/main.js
 ```
-**Output:**
+**Input in `test/main.js`:**
+```javascript
+make int var_name = 10;
+
+make function fun_name(int arg1, int arg2):int {
+  make int sum = add(arg1, arg2);
+  return multiply(sum, var_name);
+}
+
+make int result = fun_name(2, 3);
+print("normal string" + any_declared_var + "other string");
 ```
-add(2, subtract(4, 2));
+**Output:**
+```javascript
+let var_name = 10;
+function fun_name(arg1, arg2) {
+  let sum = add(arg1, arg2);
+  return multiply(sum, var_name);
+}
+let result = fun_name(2, 3);
+console.log("normal string" + any_declared_var + "other string");
 ```
 
 ### Run Test Suite
@@ -457,14 +479,28 @@ node test/compiler.test.js
 ✓ Passed: Function call with trailing comma
 ✓ Passed: Top-level number literal
 ✓ Passed: Top-level string literal
+✓ Passed: Variable declaration with integer literal
+✓ Passed: Variable declaration with string literal
+✓ Passed: Variable declaration with function call
+✓ Passed: Function declaration with empty body
+✓ Passed: Function declaration with body and return
+✓ Passed: Full program: function declaration and function call
+✓ Passed: Print with string and variable concatenation
+✓ Passed: Print with single string literal
+✓ Passed: Print with numeric binary addition
 
-All 11 compiler tests passed!
+All 20 compiler tests passed!
 ✓ Passed error case: Unknown character in tokenizer
 ✓ Passed error case: Unterminated string in tokenizer
 ✓ Passed error case: Missing function name
 ✓ Passed error case: Unclosed parenthesis
 ✓ Passed error case: Unexpected token at program level
 ✓ Passed error case: Missing comma between arguments
+✓ Passed error case: Missing variable type in make declaration
+✓ Passed error case: Missing '=' in variable declaration
+✓ Passed error case: Missing function name in make function
+✓ Passed error case: Missing ':' in function declaration
+✓ Passed error case: Unclosed '{' in function declaration
 
-All 6 error tests passed!
+All 11 error tests passed!
 ```

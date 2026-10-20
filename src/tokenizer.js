@@ -4,6 +4,7 @@ const WHITESPACE = /\s/;
 const NUMBERS = /[0-9]/;
 const IDENTIFIER_START = /[a-zA-Z_]/;
 const IDENTIFIER_PART = /[a-zA-Z0-9_]/;
+const KEYWORDS = new Set(['make', 'function', 'return']);
 
 export const tokenizer = (input) => {
     const tokens = [];
@@ -46,6 +47,45 @@ export const tokenizer = (input) => {
             tokens.push({
                 type: 'paren',
                 value: ')',
+                start: tokenStart,
+                end: tokenStart + 1,
+                line: tokenLine,
+                column: tokenColumn
+            });
+            advance();
+            continue;
+        }
+
+        if (char === '{' || char === '}') {
+            tokens.push({
+                type: 'brace',
+                value: char,
+                start: tokenStart,
+                end: tokenStart + 1,
+                line: tokenLine,
+                column: tokenColumn
+            });
+            advance();
+            continue;
+        }
+
+        if (char === ':') {
+            tokens.push({
+                type: 'colon',
+                value: ':',
+                start: tokenStart,
+                end: tokenStart + 1,
+                line: tokenLine,
+                column: tokenColumn
+            });
+            advance();
+            continue;
+        }
+
+        if (char === '=' || char === '+' || char === '-' || char === '*' || char === '/' || char === '%') {
+            tokens.push({
+                type: 'operator',
+                value: char,
                 start: tokenStart,
                 end: tokenStart + 1,
                 line: tokenLine,
@@ -107,8 +147,9 @@ export const tokenizer = (input) => {
             while (current < input.length && IDENTIFIER_PART.test(input[current])) {
                 value += advance();
             }
+            const type = KEYWORDS.has(value) ? 'keyword' : 'name';
             tokens.push({
-                type: 'name',
+                type,
                 value,
                 start: tokenStart,
                 end: current,

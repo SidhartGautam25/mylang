@@ -56,6 +56,51 @@ const tests = [
         name: "Top-level string literal",
         input: '"hello"',
         expected: '"hello"'
+    },
+    {
+        name: "Variable declaration with integer literal",
+        input: "make int var_name = 10;",
+        expected: "let var_name = 10;"
+    },
+    {
+        name: "Variable declaration with string literal",
+        input: 'make string msg = "hello";',
+        expected: 'let msg = "hello";'
+    },
+    {
+        name: "Variable declaration with function call",
+        input: "make int total = add(2, 3);",
+        expected: "let total = add(2, 3);"
+    },
+    {
+        name: "Function declaration with empty body",
+        input: "make function fun_name(int arg1 , int arg2):return_type{}",
+        expected: "function fun_name(arg1, arg2) {\n}"
+    },
+    {
+        name: "Function declaration with body and return",
+        input: "make function addTwo(int a, int b):int { return add(a, b); }",
+        expected: "function addTwo(a, b) {\n  return add(a, b);\n}"
+    },
+    {
+        name: "Full program: function declaration and function call",
+        input: "make function double(int n):int { return add(n, n); }\nmake int res = double(5);",
+        expected: "function double(n) {\n  return add(n, n);\n}\nlet res = double(5);"
+    },
+    {
+        name: "Print with string and variable concatenation",
+        input: 'print("normal string" + any_declared_var + "other string");',
+        expected: 'console.log("normal string" + any_declared_var + "other string");'
+    },
+    {
+        name: "Print with single string literal",
+        input: 'print("hello world");',
+        expected: 'console.log("hello world");'
+    },
+    {
+        name: "Print with numeric binary addition",
+        input: "print(10 + 20);",
+        expected: "console.log(10 + 20);"
     }
 ];
 
@@ -98,6 +143,31 @@ const errorTests = [
     {
         name: "Missing comma between arguments",
         input: "add(2 3)",
+        errorType: SyntaxError
+    },
+    {
+        name: "Missing variable type in make declaration",
+        input: "make = 10;",
+        errorType: SyntaxError
+    },
+    {
+        name: "Missing '=' in variable declaration",
+        input: "make int x 10;",
+        errorType: SyntaxError
+    },
+    {
+        name: "Missing function name in make function",
+        input: "make function (int a):void {}",
+        errorType: SyntaxError
+    },
+    {
+        name: "Missing ':' in function declaration",
+        input: "make function foo(int a) void {}",
+        errorType: SyntaxError
+    },
+    {
+        name: "Unclosed '{' in function declaration",
+        input: "make function foo(int a):void {",
         errorType: SyntaxError
     }
 ];
