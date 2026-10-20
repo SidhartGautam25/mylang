@@ -31,7 +31,8 @@ export const codeGenerator = (node) => {
     case 'BinaryExpression': {
       const left = codeGenerator(node.left);
       const right = codeGenerator(node.right);
-      return `${left} ${node.operator} ${right}`;
+      const expr = `${left} ${node.operator} ${right}`;
+      return node.parenthesized ? `(${expr})` : expr;
     }
 
     case 'Identifier':

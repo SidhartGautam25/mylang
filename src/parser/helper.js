@@ -328,6 +328,9 @@ export const PARSER_UTILS = {
                 errorMessages.syntaxError("Expected ')' after expression", tokens[cursor.current] || null, cursor.current, source);
             }
             cursor.current++; // consume ')'
+            if (expr && typeof expr === 'object') {
+                expr.parenthesized = true;
+            }
             return expr;
         }
 
@@ -392,40 +395,17 @@ export const PARSER_UTILS = {
             return PARSER_UTILS.parseReturnStatement(tokens, cursor, source);
         }
 
-        if (token.type === 'name') {
-            const nextToken = tokens[cursor.current + 1];
-            if (nextToken && nextToken.type === 'paren' && nextToken.value === '(') {
-                const call = PARSER_UTILS.parseCallExpression(tokens, cursor, source);
-                if (cursor.current < tokens.length && tokens[cursor.current].type === 'semicolon') {
-                    cursor.current++;
-                }
-                return call;
-            } else {
-                const id = PARSER_UTILS.parseIdentifier(token);
-                cursor.current++;
-                if (cursor.current < tokens.length && tokens[cursor.current].type === 'semicolon') {
-                    cursor.current++;
-                }
-                return id;
-            }
-        }
-
-        if (token.type === 'number') {
-            const num = PARSER_UTILS.parseNumberLiteral(token);
-            cursor.current++;
+        if (
+            token.type === 'name' ||
+            token.type === 'number' ||
+            token.type === 'string' ||
+            (token.type === 'paren' && token.value === '(')
+        ) {
+            const expr = PARSER_UTILS.parseExpression(tokens, cursor, source);
             if (cursor.current < tokens.length && tokens[cursor.current].type === 'semicolon') {
                 cursor.current++;
             }
-            return num;
-        }
-
-        if (token.type === 'string') {
-            const str = PARSER_UTILS.parseStringLiteral(token);
-            cursor.current++;
-            if (cursor.current < tokens.length && tokens[cursor.current].type === 'semicolon') {
-                cursor.current++;
-            }
-            return str;
+            return expr;
         }
 
         errorMessages.syntaxError(

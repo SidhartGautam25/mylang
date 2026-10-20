@@ -29,11 +29,15 @@ export const VISITOR_UTILS = {
     CallExpression: {
         enter(node, parent, contextStack) {
             const currentStack = contextStack[contextStack.length - 1];
+            let calleeName = node.name || (node.callee && node.callee.name);
+            if (calleeName === 'print') {
+                calleeName = 'console.log';
+            }
             let expression = {
                 type: 'CallExpression',
                 callee: {
                     type: 'Identifier',
-                    name: node.name || (node.callee && node.callee.name)
+                    name: calleeName
                 },
                 arguments: []
             };
@@ -140,7 +144,8 @@ export const VISITOR_UTILS = {
                 type: 'BinaryExpression',
                 operator: node.operator,
                 left: null,
-                right: null
+                right: null,
+                parenthesized: Boolean(node.parenthesized)
             };
 
             if (!parent || parent.type === 'Program' || parent.type === 'BlockStatement') {
