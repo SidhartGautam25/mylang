@@ -101,6 +101,31 @@ const tests = [
         name: "Print with numeric binary addition",
         input: "print(10 + 20);",
         expected: "console.log(10 + 20);"
+    },
+    {
+        name: "Print with variable identifier",
+        input: "print(any_declared_var);",
+        expected: "console.log(any_declared_var);"
+    },
+    {
+        name: "Print with multiple arguments",
+        input: 'print("value: ", result);',
+        expected: 'console.log("value: ", result);'
+    },
+    {
+        name: "Print with no arguments",
+        input: "print();",
+        expected: "console.log();"
+    },
+    {
+        name: "Print inside function declaration",
+        input: 'make function logMsg(string msg):void { print("msg: " + msg); }',
+        expected: 'function logMsg(msg) {\n  console.log("msg: " + msg);\n}'
+    },
+    {
+        name: "Print with parenthesized expression",
+        input: 'print("total: " + (a + b));',
+        expected: 'console.log("total: " + (a + b));'
     }
 ];
 
@@ -168,6 +193,11 @@ const errorTests = [
     {
         name: "Unclosed '{' in function declaration",
         input: "make function foo(int a):void {",
+        errorType: SyntaxError
+    },
+    {
+        name: "Incomplete binary expression inside print",
+        input: 'print("hello" + );',
         errorType: SyntaxError
     }
 ];
