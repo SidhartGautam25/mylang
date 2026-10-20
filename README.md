@@ -435,6 +435,24 @@ Recursively formats each node:
 
 ## Usage and Testing
 
+### CLI Runner (`cli.js`)
+
+Compile and execute any MyLang source file (`.my`, `.mylang`, etc.) directly from the terminal:
+
+```bash
+# 1. Compile source file to an executable .js file:
+node cli.js example.my
+
+# 2. Run the generated executable file:
+node example.js
+
+# 3. Or compile and run directly in a single command:
+node cli.js example.my --run
+
+# 4. Custom output path:
+node cli.js example.my -o dist/app.js --run
+```
+
 ### Run Main Demonstration
 ```bash
 node test/main.js

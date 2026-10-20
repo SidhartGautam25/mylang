@@ -1,0 +1,15 @@
+make int var_name = 10;
+
+make function sum(int a , int b):int{
+  return a + b;
+}
+
+
+make function fun_name(int arg1, int arg2):int {
+  make int total = sum(arg1, arg2);
+  return total;
+}
+
+make int result = fun_name(2, 3);
+print("normal string" + " + " + "other string");
+print("Calculated result of fun_name(2, 3): " + result);
